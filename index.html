@@ -1,0 +1,87 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <script src="node_modules/vis/dist/vis.js"></script>
+  <link href="node_modules/vis/dist/vis.css" rel="stylesheet" type="text/css" />
+  <style>
+      #mynetwork {
+          width: 600px;
+          height: 600px;
+          border: 1px solid #000;
+      }
+  </style>
+</head>
+<body>
+    <h1>Pipe flow challenge</h1>
+
+    <p>
+        You are in charge of Yorks water network. The side of the network
+        furthest from the source is not receiving enough water, despite an
+        unlimited supply. You are tasked with writing some code which, using the
+        JSON representation of the network, can find the maximum flow from the
+        start to the end of the network, and also find which pipes need their
+        capacity increasing to increase the flow to the end.
+    </p>
+
+    <h2>Network</h2>
+    <div id="mynetwork"></div>
+
+    <h2>Network JSON</h2>
+    <pre />
+
+    <script type="text/javascript">
+
+      const jsonNodes = [
+        {from: 1, to: 2, capacity: 12},
+        {from: 1, to: 4, capacity: 45},
+        {from: 2, to: 3, capacity: 3},
+        {from: 3, to: 6, capacity: 27},
+        {from: 3, to: 9, capacity: 2},
+        {from: 4, to: 5, capacity: 30},
+        {from: 4, to: 7, capacity: 5},
+        {from: 5, to: 6, capacity: 97},
+        {from: 5, to: 8, capacity: 54},
+        {from: 6, to: 9, capacity: 15},
+        {from: 7, to: 8, capacity: 10},
+        {from: 8, to: 9, capacity: 9},
+        {from: 5, to: 7, capacity: 36},
+        {from: 5, to: 1, capacity: 57},
+        {from: 8, to: 5, capacity: 3},
+      ];
+
+      document.querySelector('pre').innerText = JSON.stringify(jsonNodes, null, 4);
+
+      // create an array with nodes
+      var nodes = new vis.DataSet([
+        {id: 1, label: 'Water\nSource'},
+        {id: 2, label: ''},
+        {id: 3, label: ''},
+        {id: 4, label: ''},
+        {id: 5, label: ''},
+        {id: 6, label: ''},
+        {id: 7, label: ''},
+        {id: 8, label: ''},
+        {id: 9, label: 'Dried\nUp'},
+      ]);
+
+      // create an array with edges
+      var edges = new vis.DataSet(
+          jsonNodes.map(({ to, from, capacity }) => ({
+              to,
+              from,
+              arrows: 'to',
+              label: capacity.toString(),
+          }))
+      );
+
+      // create a network
+      var container = document.getElementById('mynetwork');
+      var data = {
+        nodes: nodes,
+        edges: edges
+      };
+      var options = {layout:{randomSeed:1}};
+      var network = new vis.Network(container, data, options);
+    </script>
+</body>
+</html>
