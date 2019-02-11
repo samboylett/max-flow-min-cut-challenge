@@ -9,6 +9,13 @@
           height: 600px;
           border: 1px solid #000;
       }
+
+      textarea {
+          background-color: rgba(0, 0, 0, 0.05);
+          padding: 3px;
+          width: 100%;
+          min-height: 300px;
+      }
   </style>
 </head>
 <body>
@@ -19,19 +26,29 @@
         furthest from the source is not receiving enough water, despite an
         unlimited supply. You are tasked with writing some code which, using the
         JSON representation of the network, can find the maximum flow from the
-        start to the end of the network, and also find which pipes need their
-        capacity increasing to increase the flow to the end.
+        start to the end of the network, and also find which pipes are causing
+        the bottleneck so their capacity can be increased.
+    </p>
+
+    <p>
+        There are ten nodes in the network, numbered <strong>0</strong> to <strong>9</strong>.
+    </p>
+
+    <p>
+        <strong>0</strong> is the water source, <strong>9</strong> is the dried up area.
     </p>
 
     <h2>Network</h2>
     <div id="mynetwork"></div>
 
     <h2>Network JSON</h2>
-    <pre />
+    <textarea readonly></textarea>
 
     <script type="text/javascript">
 
       const jsonNodes = [
+        {from: 0, to: 1, capacity: 123},
+        {from: 0, to: 2, capacity: 32},
         {from: 1, to: 2, capacity: 12},
         {from: 1, to: 4, capacity: 45},
         {from: 2, to: 3, capacity: 3},
@@ -49,11 +66,12 @@
         {from: 8, to: 5, capacity: 3},
       ];
 
-      document.querySelector('pre').innerText = JSON.stringify(jsonNodes, null, 4);
+      document.querySelector('textarea').innerHTML = JSON.stringify(jsonNodes, null, 4);
 
       // create an array with nodes
       var nodes = new vis.DataSet([
-        {id: 1, label: 'Water\nSource'},
+        {id: 0, label: 'Water\nSource'},
+        {id: 1, label: ''},
         {id: 2, label: ''},
         {id: 3, label: ''},
         {id: 4, label: ''},
