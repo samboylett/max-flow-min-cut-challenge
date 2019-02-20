@@ -37,11 +37,76 @@ class MaxFlow {
             }));
     }
 
-    // getMaxFlow(path = this.paths, ) {
+    getPath(start = this.start, end = this.end, currentPath = [start]) {
+        const linkedNodes = this.nodes
+            .filter(({ from }) => from === start)
+            .filter(({ to }) => !currentPath.includes(to))
+            .filter(({ capacity }) => capacity > 0);
 
-    // }
+        for (let i = 0; i < linkedNodes.length; i++) {
+            const node = linkedNodes[i];
+            const testPath = [...currentPath, node.to];
+
+            if (node.to === end) {
+                return testPath;
+            }
+
+            const path = this.getPath(node.to, end, testPath);
+
+            if (path) return path;
+        }
+
+        return null;
+    }
+
+    getLink(start, end) {
+        return this.nodes.find(({ from, to }) => from === start && end === to);
+    }
+
+    getPathCapacity(path) {
+        let capacity = Infinity;
+
+        for (let i = 1; i < path.length; i++) {
+            capacity = Math.min(
+                capacity,
+                this.getLink(path[i - 1], path[i]).capacity
+            );
+        }
+
+        return capacity;
+    }
+
+    removePathCapacity(path, amount) {
+        for (let i = 1; i < path.length; i++) {
+            this.getLink(path[i - 1], path[i]).capacity -= amount;
+        }
+    }
+
+    getMaxFlow() {
+        let path;
+        let maxFlow = 0;
+
+        while(path = this.getPath()) {
+            const capacity = this.getPathCapacity(path);
+
+            console.log(JSON.stringify(path), capacity);
+
+            this.removePathCapacity(path, capacity);
+
+            maxFlow += capacity;
+        }
+
+        return maxFlow;
+    }
+
+    getMinCut() {
+        return this.nodes
+            .filter(({ capacity }) => capacity === 0);
+    }
 }
 
 const maxFlow = new MaxFlow(jsonNodes, 0, 9);
 
-console.log(JSON.stringify(maxFlow.paths, null, 2));
+console.log(maxFlow.getMaxFlow());
+
+console.log(maxFlow.getMinCut());
