@@ -89,8 +89,6 @@ class MaxFlow {
         while(path = this.getPath()) {
             const capacity = this.getPathCapacity(path);
 
-            console.log(JSON.stringify(path), capacity);
-
             this.removePathCapacity(path, capacity);
 
             maxFlow += capacity;
