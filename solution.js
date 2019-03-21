@@ -37,6 +37,28 @@ class MaxFlow {
             }));
     }
 
+    getCutOffNodes() {
+        const visibleNodes = this.getVisibleNodes();
+
+        return this.nodes
+            .filter(({ to }) => !visibleNodes.includes(to))
+            .map(({ to }) => to);
+    }
+
+    getVisibleNodes(start = this.start, existingNodes = [this.start]) {
+        const nodes = this.nodes
+            .filter(({ from }) => from === start)
+            .filter(({ to }) => !existingNodes.includes(to))
+            .filter(({ capacity }) => capacity > 0)
+            .map(({ to }) => to);
+
+        nodes.forEach(node => {
+            nodes.push(...this.getVisibleNodes(node, [...nodes, ...existingNodes]));
+        });
+
+        return nodes;
+    }
+
     getPath(start = this.start, end = this.end, currentPath = [start]) {
         const linkedNodes = this.nodes
             .filter(({ from }) => from === start)
@@ -98,8 +120,12 @@ class MaxFlow {
     }
 
     getMinCut() {
+        const visibleNodes = this.getVisibleNodes();
+        const cutOffNode = this.getCutOffNodes();
+
         return this.nodes
-            .filter(({ capacity }) => capacity === 0);
+            .filter(({ from }) => visibleNodes.includes(from))
+            .filter(({ to }) => cutOffNode.includes(to));
     }
 }
 
